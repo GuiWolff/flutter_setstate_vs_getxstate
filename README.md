@@ -1,27 +1,58 @@
-# Iniciando no Flutter com boas práticas!
+# Instalando o pacote GetX!
 
-Inicialmente, após toda a burocracia para a criação de um novo projeto Flutter, foi tirado do código todos os comentários introdutórios que ocupavam muitas linhas de código no projeto.
-Para fins de boas práticas, o código será modularizado em blocos menores.
+Dentro do arquivo pubspec.yaml, os comentários para o código ficar legível.
+Repare como ficou no código abaixo.
+### `flutter_setstate_vs_getxstate -> pubspec.yaml`
+```yaml
+name: flutter_setstate_vs_getxstate
+description: setState Vs. Obx
 
-### flutter_setstate_vs_getxstate -> lib
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.0-80.1.beta <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+
+  uses-material-design: true
+```
+
+Note que foi adicionada a linha contendo `get: ^4.6.1`.<br/>
+O código deve estar identado exatamente como a linha que contem `cupertino_icons: ^1.0.2`
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  get: ^4.6.1
+```
+Após inserir o pacote desejado, clique em `pub get` como na imagem a seguir.
+
+### `flutter_setstate_vs_getxstate -> lib`
 <div style="width: 400px;">
 
-![](imagens_readme/img.png)
+![](imagens_readme/img_2.png)
 </div>
 
-Dentro da pasta lib, será criada a pasta pages, que será responsável por armazenar arquivos de código que programam o frontend (tela) e também de lógica de negócio de cada tela do app.
+Prontinho! o GetX está instalado! <br/>
+Agora vamos por a mão na massa para inserir o getX no projeto!
 
-
-### flutter_setstate_vs_getxstate -> lib -> pages -> myHomePage
-<div style="width: 400px">
-
-![](imagens_readme/img_1.png)
-</div>
-
-Note na imagem anterior como o projeto ficou estruturado.
-O arquivo "myHomePage.dart" é uma parte do código contigo no arquivo "main.dart" criado no template inicial do Flutter.
-
-## main.dart
+### `main.dart`
 ```dart
 void main() {
   runApp(const MyApp());
@@ -42,34 +73,171 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
-## myHomePage.dart
+
+Em `main.dart`, altere `MaterialApp` para `GetMaterialApp`
 ```dart
-import 'package:flutter/material.dart';
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+void main() {
+  runApp(const MyApp());
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter com setState()'),
+    );
+  }
+}
+```
+Pronto! Agora o `GetX` está instalado no projeto!
+
+## Alterando o genciador de estados na page `MyHomePage`
+
+Em `myHomePage.dart` delete a classe `MyHomePage extends StatefulWidget` inteira.<br/>
+Na classe seguinte `_MyHomePageState extends State<MyHomePage>`, altere o código `_MyHomePageState extends State<MyHomePage>` para `MyHomePage extends GetView`. Repare que aparecerá alguns erros, mas isto não é problema, pois já iremos concertar!
+
+Para concertar o primeiro erro, a classe `MyHomePage` deve ter seu construtor recebendo o título da page, definido na classe `MyApp`, no arquivo `main.dart`.
+
+```dart
+class MyHomePage extends GetView {
+  MyHomePage(this. title);
+  String title;
+  ...
+  ```
+Após criar o construtor, irá aparecer um _warning_ nele, então posicione o mouse encima do _warning_ até aparecer uma lampada amarela de sugestões e clique na sugestão Add 'key' to constructor, como na imagem abaixo.
+
+<div style="width: 400px;">
+
+![](imagens_readme/img_3.png)
+</div>
+
+O proximo erro se resolve removento o método `setState()` de dentro do método `_incrementCounter()`, veja os códigos a seguir:
+### Errado
+```dart
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
   }
+  ```
+
+### Correto
+```dart
+    void _incrementCounter() {
+    _counter++;
+  }
+  ```
+O método `setState()` existe apenas dentro da Classe `State()` quando um Widget tem estado (`class NOMEDACLASSE extends StatefullWidget`), deste modo, ao dar um `extends GetView`,
+todas as invocações do metodo `setState()` apresentam erro.
+
+Por fim, o ultimo erro apresentado consiste em tirar um parametro de dentro do widget Text.
+
+### Errado
+```dart
+  appBar: AppBar(
+centerTitle: true,
+title: Text(widget.title),
+),
+...
+  ```
+
+### Correto
+```dart
+  appBar: AppBar(
+centerTitle: true,
+title: Text(title),
+),
+...
+  ```
+
+Pronto, agora os erros foram corrigidos, porém a tela ainda não se atualiza quando o botão for clicado!
+Para isto iremos inserir a lógica de negócio por trás da tela em um arquivo separado.
+
+Dentro da pasta `myHomePage`, insira um novo arquivo chamado `myHomePageController.dart`.
+
+<div style="width: 400px;">
+
+![](imagens_readme/img_4.png)
+</div>
+
+Neste novo arquivo iremos criar o controlador da tela `MyhomePage()`.
+
+```dart
+class MyHomePageController extends GetxController{
+  
+  int contador = 0;
+  
+  void somaUmaUnidade(){
+    contador = contador + 1;
+  }
+}
+```
+Após criado o controller, vamos invocá-lo na view:
+
+### Antes
+```dart
+class MyHomePage extends GetView {
+  ...
+}
+```
+
+### Depois
+```dart
+class MyHomePage extends GetView<MyHomePageController>{
+  ...
+}
+```
+A palavra `extends` diz que a Classe herda algo de sua extensão, neste caso uma Classe com comportamentos `GetView` tipada com o controller que acabamos de criar `<MyHomePageController>`. Isso garante que o controller seja inicializado coretamente.
+
+Agora vamos pescar este controller já inicializado para dentro da nossa tela `MyHomePage`. 
+
+### Antes
+```dart
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+...
+```
+### Depois
+```dart
+  @override
+Widget build(BuildContext context) {
+  Get.put(MyHomePageController());
+  return Scaffold(
+...
+```
+Foi acrescentado a linha com o metodo `Get.put(MyHomePageController());`.
+
+Agora podemos eliminar as variáveis que eram utilizadas anteriormente com o `setState()`
+
+### Variáveis para deletar
+```dart
+  int _counter = 0;
+
+  void _incrementCounter() {
+    _counter++;
+  }
+```
+
+### Códito quase pronto
+```dart
+class MyHomePage extends GetView<MyHomePageController>{
+  MyHomePage(this. title, {Key? key}) : super(key: key);
+  String title;
 
   @override
   Widget build(BuildContext context) {
+    Get.put(MyHomePageController());
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
         child: Column(
@@ -94,25 +262,117 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 ```
+Neste momento, devemos apenas inserir a variável `contador` no lugar de `_counter` e `somaUmaUnidade` no lugar de `_incrementCounter`.
 
-No código a seguir, repare que dentro da classe "_MyHomePageState" até a marcação @override tem a variável _counter, inicializada com o valor 0 e um método "_incrementCounter()".
-O método "_incrementCounter()" tem uma unica responsabilidade, que é somar uma unidade na variável "_counter" cada vez que é invocado.
-
-A tela do aplicativo só sera atualizada se a acação de incrementar +1 estiver dentro do método de setar estado, o famoso "setState()".
-
+Alterando a variável _counter:
+### Antes
 ```dart
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ...
+Text(
+    '$_counter',
+    style: Theme.of(context).textTheme.headline4,
+),
+...
 ```
-Da maneira nativa de controlar os estados da tela do aplicativo que o Flutter proporciona, conforme o projeto cresce, fica muito difícil de programar e mais difícil ainda para dar manutenção no código.
-Na proxima Branche esta maneira de setar o estado da tela (atualizar a tela) será feito com um gerenciador de estados excelente chamado GetX.
+### Depois
+```dart
+Text(
+    '${controller.contador}',
+    style: Theme.of(context).textTheme.headline4,
+),
+...
+```
+
+Alterando o método `incrementCounter`:
+### Antes
+```dart
+floatingActionButton: FloatingActionButton(
+    onPressed: _incrementCounter,
+    tooltip: 'Increment',
+    child: const Icon(Icons.add),
+),
+...
+```
+### Depois
+```dart
+floatingActionButton: FloatingActionButton(
+    onPressed: () => controller.somaUmaUnidade(),
+    tooltip: 'Increment',
+    child: const Icon(Icons.add),
+),
+...
+```
+Na linha `onPressed: () => controller.somaUmaUnidade(),`, deve ser utilizado `() =>` antes de `controller.somaUmaUnidade()` para se passar um método por parametro para dentro do botão.
+
+### Se você for testar neste momento, o aplicativo `Não` irá atualizar a tela ainda, e isso foi propositalmente. Falta apenas a cereja do bolo!
+Esta é a parte mais importante, que garante que seu aplicativo atualize a tela sozinho sempre que houver alguma alteração no valor das variáveis de interesse, que neste caso é a variável `contador` dentro da classe `MyHomePageController`.
+
+Voltamos para o código do controllador:
+
+### Antes
+```dart
+class MyHomePageController extends GetxController{
+
+  int contador = 0;
+
+  void somaUmaUnidade(){
+    contador = contador + 1;
+  }
+}
+```
+
+### Depois
+```dart
+class MyHomePageController extends GetxController{
+
+  RxInt contador = 0.obs;
+
+  void somaUmaUnidade(){
+    contador.value = contador.value + 1;
+  }
+}
+```
+Repare que a variável `contador` teve seu tipo alterado de `int` para `RxInt`. Neste momento estamos avisando que esta variável é Observável, e que sempre que ela ter seu valor alterado, a tela será atualizada automaticamente.<br/>
+Após alterar o tipo para `RxInt` o valor inicial da de `contador` deve ter `.obs` no final.<br/>
+Sempre que a variável for sofrer alteração ou implementação, deve-se utilizá-la com `.value` em seu final, como mostrado anteriormente.
+
+Voltando para a tela `MyHomePage()`:
+
+A parte final, a cereja do bolo para tornar o app Reativo (_Observável_), é apenas acrescentar o Widget `Obx()` em torno do Widget que manipula a variável observável:
+
+### Antes
+```dart
+Text(
+  '${controller.contador}',
+  style: Theme.of(context).textTheme.headline4,
+),
+```
+Para isso iremos deixar o mouse encima da palava `Text` até aparecer a lampada amarela de sugestões, após clique em `Wrap with widget...`
+
+<div style="width: 400px;">
+
+![](imagens_readme/img_5.png)
+</div>
+
+O resultado será este a seguir:
+```dart
+widget(
+  child: Text(
+    '${controller.contador}',
+    style: Theme.of(context).textTheme.headline4,
+  ),
+),
+```
+No lugar de `widget` iremos alterar para `Obx` e no lugar de `child:` iremos alterar para `() =>`
+
+### Depois
+```dart
+Obx(()=> Text(
+    '${controller.contador}',
+    style: Theme.of(context).textTheme.headline4,
+    ),
+),
+```
+Prontinho! Agora o aplicativo atualiza a tela sozinho!
+
+Este tutorial é importante para o desenvolvedor, por que ele consegue separar a tela do aplicativo totalmente da lógica de negócio!
+## Bons estudos, chefia!

@@ -1,30 +1,19 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_setstate_vs_getxstate/pages/myHomePage/myHomePageController.dart';
+import 'package:get/get.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class MyHomePage extends GetView<MyHomePageController>{
+  MyHomePage(this. title, {Key? key}) : super(key: key);
+  String title;
 
   @override
   Widget build(BuildContext context) {
+    Get.put(MyHomePageController());
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
         child: Column(
@@ -33,15 +22,17 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Obx(
+              ()=> Text(
+                '${controller.contador}',
+                style: Theme.of(context).textTheme.headline4,
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => controller.somaUmaUnidade(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
