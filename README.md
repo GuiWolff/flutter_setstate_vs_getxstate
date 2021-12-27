@@ -375,4 +375,4 @@ Obx(()=> Text(
 Prontinho! Agora o aplicativo atualiza a tela sozinho!
 
 Este tutorial é importante para o desenvolvedor, por que ele consegue separar a tela do aplicativo totalmente da lógica de negócio!
-## Bons estudos, chefia!
+## Bons estudos, dev!
