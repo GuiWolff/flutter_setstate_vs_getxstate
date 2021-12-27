@@ -362,12 +362,12 @@ widget(
   ),
 ),
 ```
-No lugar de `widget` iremos alterar para `Obx` e no lugar de `child:` iremos alterar para `() =>`
+No lugar de `widget` iremos alterar para `Obx` e no lugar de `child:` iremos alterar para `() =>` e `controller.contador` para `controller.contador.value`
 
 ### Depois
 ```dart
 Obx(()=> Text(
-    '${controller.contador}',
+    '${controller.contador.value}',
     style: Theme.of(context).textTheme.headline4,
     ),
 ),

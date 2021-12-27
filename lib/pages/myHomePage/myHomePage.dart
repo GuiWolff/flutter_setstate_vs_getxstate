@@ -24,7 +24,7 @@ class MyHomePage extends GetView<MyHomePageController>{
             ),
             Obx(
               ()=> Text(
-                '${controller.contador}',
+                '${controller.contador.value}',
                 style: Theme.of(context).textTheme.headline4,
               ),
             ),

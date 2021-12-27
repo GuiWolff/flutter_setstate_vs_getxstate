@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class MyHomePageController extends GetxController{
 
-  int contador = 0;
+  RxInt contador = 0.obs;
 
   void somaUmaUnidade(){
-    contador = contador + 1;
+    contador.value = contador.value + 1;
   }
 }
