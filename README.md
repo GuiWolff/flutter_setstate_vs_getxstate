@@ -3,7 +3,7 @@
 Inicialmente, após toda a burocracia para a criação de um novo projeto Flutter, foi tirado do código todos os comentários introdutórios que ocupavam muitas linhas de código no projeto.
 Para fins de boas práticas, o código será modularizado em blocos menores.
 
-###flutter_setstate_vs_getxstate -> lib
+### flutter_setstate_vs_getxstate -> lib
 <div style="width: 400px;">
 
 ![](imagens_readme/img.png)
@@ -12,7 +12,7 @@ Para fins de boas práticas, o código será modularizado em blocos menores.
 Dentro da pasta lib, será criada a pasta pages, que será responsável por armazenar arquivos de código que programam o frontend (tela) e também de lógica de negócio de cada tela do app.
 
 
-###flutter_setstate_vs_getxstate -> lib -> pages -> myHomePage
+### flutter_setstate_vs_getxstate -> lib -> pages -> myHomePage
 <div style="width: 400px">
 
 ![](imagens_readme/img_1.png)
@@ -21,7 +21,7 @@ Dentro da pasta lib, será criada a pasta pages, que será responsável por arma
 Note na imagem anterior como o projeto ficou estruturado.
 O arquivo "myHomePage.dart" é uma parte do código contigo no arquivo "main.dart" criado no template inicial do Flutter.
 
-###main.dart
+## main.dart
 ```dart
 void main() {
   runApp(const MyApp());
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
-###myHomePage.dart
+## myHomePage.dart
 ```dart
 import 'package:flutter/material.dart';
 
