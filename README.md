@@ -118,7 +118,7 @@ Após criar o construtor, irá aparecer um _warning_ nele, então posicione o mo
 </div>
 
 O proximo erro se resolve removento o método `setState()` de dentro do método `_incrementCounter()`, veja os códigos a seguir:
-### Errado
+### Antes
 ```dart
   void _incrementCounter() {
     setState(() {
@@ -127,7 +127,7 @@ O proximo erro se resolve removento o método `setState()` de dentro do método 
   }
   ```
 
-### Correto
+### Depois
 ```dart
     void _incrementCounter() {
     _counter++;
@@ -138,7 +138,7 @@ todas as invocações do metodo `setState()` apresentam erro.
 
 Por fim, o ultimo erro apresentado consiste em tirar um parametro de dentro do widget Text.
 
-### Errado
+### Antes
 ```dart
   appBar: AppBar(
 centerTitle: true,
@@ -147,7 +147,7 @@ title: Text(widget.title),
 ...
   ```
 
-### Correto
+### Depois
 ```dart
   appBar: AppBar(
 centerTitle: true,
